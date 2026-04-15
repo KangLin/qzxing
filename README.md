@@ -52,21 +52,58 @@ The project can be used in two ways:
 
 ## Embed the source code.
 
-Copy source code folder of QZXing to the root of your project. Add the following line to your .pro file. For more information see [here](https://github.com/ftylitak/qzxing/wiki/Using-the-QZXing-through-the-source-code).
+Copy source code folder of QZXing to the root of your project.
 
-```qmake
-include(QZXing/QZXing.pri)
-```
+- qmake project
+
+  Add the following line to your .pro file. For more information see [here](https://github.com/ftylitak/qzxing/wiki/Using-the-QZXing-through-the-source-code).
+
+  ```qmake
+  include(QZXing/QZXing.pri)
+  ```
+
+- cmake project
+
+  Download source code of QZXing to QZXing_DIR. Add the following line to your CMakeLists.txt file.
+
+  ```cmake
+  add_subdirectory(${QZXing_DIR}/src ${CMAKE_BINARY_DIR}/qzxing)
+  target_link_libraries(${PROJECT_NAME} PRIVATE qzxing)
+  ```
 
 <a name="externalLibrary"></a>
 
 ## Compile the project as an external library
 
-Open QZXing project (QZXing.pro) and compile. If it is needed to compile as static library, uncomment the following line in the .pro file.
+- qmake project
 
-```qmake
-CONFIG += staticlib
-```
+  Open QZXing project (QZXing.pro) and compile. If it is needed to compile as static library, uncomment the following line in the .pro file.
+
+  ```qmake
+  CONFIG += staticlib
+  ```
+
+- cmake project
+  - Build
+
+    Open QZXing project (CMakeLists.txt) and  compile.
+	If it is needed to compile as dynamic library.
+	
+    ```cmake
+	cmake . -DCMAKE_INSTALL_PREFIX=install -DBUILD_SHARED_LIBS=ON
+	cmake --build .
+	cmake --install .
+	```
+
+    - BUILD_SHARED_LIBS
+	  - ON: build dynamic library
+	  - OFF: build static library
+  - Usage. Add the following line to your CMakeLists.txt file.
+  
+    ```cmake
+	FIND_PACKAGE(qzxing)
+	target_link_libraries(${PROJECT_NAME} PRIVATE qzxing)
+	```
 
 <a name="controlDependencies"></a>
 
