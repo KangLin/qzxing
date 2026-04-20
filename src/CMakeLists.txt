@@ -36,6 +36,8 @@ include(GNUInstallDirs)
 include(GenerateExportHeader)
 include(CMakeDependentOption)
 
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core)
+
 SET(BIGINT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/zxing/bigint)
 SET(WIN32_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/zxing/win32/zxing)
 SET(ZXING_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/zxing/zxing)
@@ -57,7 +59,11 @@ set(SOURCE_FILES
     QZXing.cpp
     )
 
-option(QZXING_MULTIMEDIA "Use multimedia" ON)
+if(QT_VERSION_MAJOR GREATER_EQUAL 6)
+    option(QZXING_MULTIMEDIA "Use multimedia" OFF)
+else()
+    option(QZXING_MULTIMEDIA "Use multimedia" ON)
+endif()
 if(QZXING_MULTIMEDIA)
     list(APPEND QZXING_QT_COMPONENTS Multimedia)
     LIST(APPEND SOURCE_FILES QZXingFilter.cpp QZXingFilter.h)
@@ -108,11 +114,10 @@ if(QZXING_USE_DECODER_1D_BARCODES)
 endif()
 
 # Change Global Definitions depending on how you want to use the library
-LIST(APPEND QZXING_PUBLIC_DEFINES DISABLE_LIBRARY_FEATURES)
+LIST(APPEND QZXING_PUBLIC_DEFINES QZXING_LIBRARY)
 
 # Need qt components
 list(APPEND QZXING_QT_COMPONENTS Core Gui)
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QZXING_QT_COMPONENTS})
 message("QT_VERSION: ${Qt${QT_VERSION_MAJOR}_VERSION}")
 FOREACH(_COMPONENT ${QZXING_QT_COMPONENTS})
@@ -131,11 +136,6 @@ SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
-
-include(CMakePackageConfigHelpers)
-include(GNUInstallDirs)
-include(GenerateExportHeader)
-include(CMakeDependentOption)
 
 add_library(qzxing ${SOURCE_FILES} ${HEADER_FILES})
 
